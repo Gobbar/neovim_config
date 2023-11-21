@@ -1,13 +1,6 @@
-if has('win64')
-	set nohidden	"Фикс свап-файла
-	let s:os_sep = '\'
-elseif has('unix')
-	let s:os_sep = '/'
-endif
-
 "Быстрый доступ к конфигурации
 let g:config_dir = fnamemodify($MYVIMRC, ':p:h')
-:command ConfigFile execute 'e' g:config_dir .. s:os_sep .. 'config.vim'
+:command ConfigFile execute 'e' g:config_dir .. g:os_sep .. 'config.vim'
 :command ConfigDir execute 'e' g:config_dir
 
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
@@ -28,7 +21,7 @@ set tabstop=4 "Ширина таба
 set shiftwidth=4 "Ширина сдвига 
 
 "Подключение плагинов
-call plug#begin(g:config_dir .. s:os_sep .. 'autoload' .. s:os_sep .. 'plugged')
+call plug#begin(g:config_dir .. g:os_sep .. 'autoload' .. g:os_sep .. 'plugged')
 Plug 'preservim/nerdtree'
 Plug 'tree-sitter/tree-sitter'
 Plug 'mbbill/undotree'
