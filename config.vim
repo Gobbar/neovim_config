@@ -2,6 +2,7 @@
 let g:config_dir = fnamemodify($MYVIMRC, ':p:h')
 :command ConfigFile execute 'e' g:config_dir .. g:os_sep .. 'config.vim'
 :command ConfigDir execute 'e' g:config_dir
+:command UpdateConfig execute 'so' g:config_dir .. g:os_sep .. 'config.vim'
 
 "Маппинги для использования vim на русской раскладке
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
@@ -40,6 +41,8 @@ cnoremap <C-v> <C-r>*
 tnoremap <Esc> <C-\><C-n>
 tnoremap <C-[> <C-\><C-n><C-w>k
 
+"Работа с системным регистром
+:command CopyConfigDir let @* = config_dir
 
 "WIP
 "set splitbelow
