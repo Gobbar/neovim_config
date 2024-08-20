@@ -1,6 +1,8 @@
 "Neovim specific stuff
 language en_US.UTF-8
 
+let mapleader = ";"
+
 "Main config and OS-specific stuff
 if has('win64')
 	set nohidden	"Фикс свап-файла
@@ -25,20 +27,27 @@ inoremap <C-х> <C-[>
 
 "Настройка нумерации и относительной нумерации строк
 set number
-nnoremap <C-m> :set invrnu<CR>
+nnoremap <Leader>m :set invrnu<CR>
 
-function UpdateNumeration()
-	let &l:rnu = mode(1) =~# '^\(no\|v\|V\|\x16\|\)'
-	redraw!
-endfunction
-:au ModeChanged *:* call UpdateNumeration()
+"function UpdateNumeration()
+"	let &l:rnu = mode(1) =~# '^\(no\|v\|V\|\x16\|\)'
+"	redraw!
+"endfunction
+":au ModeChanged *:* call UpdateNumeration()
+
+" Relative number on active window of normal mode
+:augroup numbertoggle
+:"	autocmd!
+:	autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set rnu | endif
+:	autocmd BufLeave,FocusLost,InsertEnter,WinLeave * if &nu | set nornu | endif
+:augroup END
 
 "Настройка поиска и подсветки поиска
 set ignorecase	"Игнорируем регистр при поиске
 set smartcase	"Игнорируем регистр при поиске, если все буквы шаблона в одном регистре
 set hlsearch	"Подсветка результатов поиска
 set incsearch	"Подсветка следующего вхождения шаблона поиска
-nnoremap <C-h> :set invhlsearch<CR>
+nnoremap <Silent><C-h> :set invhlsearch<CR>
 
 "Настройка отступов
 set tabstop=4 "Ширина таба
@@ -58,23 +67,45 @@ Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-signify'
 
 "Telescope and dependencies
-Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.5' }
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-ui-select.nvim'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 
+" <to_del>
 "Omnisharp and C# plugins
-Plug 'OmniSharp/omnisharp-vim' " After install use :OmniSharpInstall to install LSP server
+"Plug 'OmniSharp/omnisharp-vim' " After install use :OmniSharpInstall to install LSP server
+
 
 " Autocompletion
-Plug 'prabirshrestha/asyncomplete.vim'
+"Plug 'prabirshrestha/asyncomplete.vim'
+" </to_del>
 
 "Mason
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'neovim/nvim-lspconfig'
 
+" Autocompletion
+""Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+""Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+""Plug 'ms-jpq/coq.thirdparty', {'branch': '3p'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+"
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+
+Plug 'L3MON4D3/LuaSnip'
+Plug 'saadparwaiz1/cmp_luasnip'
+
 "Database
-"dadbod
+Plug 'tpope/vim-dadbod'
+Plug 'kristijanhusak/vim-dadbod-ui'
+Plug 'kristijanhusak/vim-dadbod-completion'
 
 "Colorschemes
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
@@ -84,10 +115,10 @@ Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 "Plug 'ghifarit53/tokyonight-vim'
 call plug#end()
 
-nnoremap <C-S-e> :NERDTreeToggle<CR>
+nnoremap ;<C-e> :NERDTreeToggle<CR>
 
 "Вставка из системного буфера обмена в командном режиме
-cnoremap <C-v> <C-r>*
+cnoremap <C-v> <C-r>+
 
 "Маппинги терминала
 tnoremap <Esc> <C-\><C-n>
@@ -97,6 +128,7 @@ tnoremap <C-[> <C-\><C-n><C-w>k
 :command CopyConfigDir let @* = config_dir
 
 "Codeium
+let g:codeium_enabled = v:false
 let g:codeium_path = g:config_dir .. '/codeium_api'
 let g:codeium_manual = v:true
 "nnoremap <C-]> call codeium#Clear()
@@ -110,8 +142,8 @@ let g:codeium_manual = v:true
 "set splitright
 
 "Asyncomplete
-let g:asyncomplete_auto_poput = 1
-let g:asyncomplete_auto_completeopt = 0
+"let g:asyncomplete_auto_poput = 1
+"let g:asyncomplete_auto_completeopt = 0
 
 "Omnisharp
 "if has('patch-8.1.1880')
@@ -161,9 +193,20 @@ endfunction
 nnoremap <C-S-t> :call MyTermOpen()<CR>
 
 "Telescope find
-nnoremap <C-P> :Telescope find_files<CR>
+nnoremap <Leader><C-P> :Telescope find_files<CR>
 nnoremap <C-S-F> :Telescope live_grep<CR>
 nnoremap <C-S-P> :Telescope 
+
+" Git
+function ChangeGit()
+	if !exists('t:GitToggleBuffer')
+		let t:GitToggleBuffer = bufnr('%')
+		:Git<CR>
+		<C-W>o
+	endif
+endfunction
+" Git toggle
+nnoremap <Leader><C-G>
 
 "Добавить Git терминал на отдельную комнду
 let $PATH .= ';C:\Program Files\Git\bin'
@@ -176,5 +219,99 @@ lua vim.cmd.colorscheme "catppuccin"
 
 "LSP
 "Angular
-lua require('my-lsp')
+"lua require('my-lsp')
 
+" Mason setup
+lua require("mason-config")
+lua require("my-lsp")
+lua require("telescope-config")
+
+ lua <<EOF
+   -- Set up nvim-cmp.
+   local cmp = require'cmp'
+
+   cmp.setup({
+   	 vim.api.nvim_create_autocmd({"FileType"}, {
+		 pattern = {"sql","mysql","plsql"},
+		 callback = function()
+		 	require('cmp').setup.buffer({sources = {{ name = 'vim-dadbod-completion' }} } )
+		 end
+	 }),
+
+     snippet = {
+       -- REQUIRED - you must specify a snippet engine
+       expand = function(args)
+         -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+          require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+         -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+         -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+         -- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+       end,
+     },
+     window = {
+		--view = 'wildmenu',
+       -- completion = cmp.config.window.bordered(),
+       -- documentation = cmp.config.window.bordered(),
+     },
+     mapping = cmp.mapping.preset.insert({
+       ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+       ['<C-f>'] = cmp.mapping.scroll_docs(4),
+       ['<C-Space>'] = cmp.mapping.complete(),
+       ['<C-e>'] = cmp.mapping.abort(),
+       ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+     }),
+     sources = cmp.config.sources({
+       { name = 'nvim_lsp' },
+       -- { name = 'vsnip' }, -- For vsnip users.
+       { name = 'luasnip' }, -- For luasnip users.
+       -- { name = 'ultisnips' }, -- For ultisnips users.
+       -- { name = 'snippy' }, -- For snippy users.
+     }, {
+       { name = 'buffer' },
+     })
+   })
+ 
+   -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
+   -- Set configuration for specific filetype.
+   --[[ cmp.setup.filetype('gitcommit', {
+     sources = cmp.config.sources({
+       { name = 'git' },
+     }, {
+       { name = 'buffer' },
+     })
+  })
+  require("cmp_git").setup() ]]-- 
+ 
+   -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+   cmp.setup.cmdline({ '/', '?' }, {
+     mapping = cmp.mapping.preset.cmdline(),
+     sources = {
+       { name = 'buffer' }
+     }
+   })
+ 
+   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+   cmp.setup.cmdline(':', {
+     mapping = cmp.mapping.preset.cmdline(),
+     sources = cmp.config.sources({
+       { name = 'path' }
+     }, {
+       { name = 'cmdline' }
+     }),
+     matching = { disallow_symbol_nonprefix_matching = false }
+   })
+
+   -- Set up lspconfig.
+   local capabilities = require('cmp_nvim_lsp').default_capabilities()
+   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+   --require('lspconfig')['vimls'].setup {
+   --  capabilities = capabilities
+   --}
+   --require('lspconfig')['tsserver'].setup {
+   --  capabilities = capabilities
+   --}
+   --require('lspconfig')['omnisharp'].setup {
+   --  capabilities = capabilities
+   --}
+ 
+EOF
