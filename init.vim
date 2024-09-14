@@ -29,18 +29,23 @@ inoremap <C-х> <C-[>
 set number
 nnoremap <Leader>m :set invrnu<CR>
 
+" Relative number on active window of normal mode
+:augroup numbertoggle
+:	autocmd!
+:	autocmd BufEnter,FocusGained,InsertLeave,WinEnter,CmdlineLeave * if &nu && mode() != "i" | set rnu | redraw! | endif
+:	autocmd BufLeave,FocusLost,InsertEnter,WinLeave,CmdlineEnter * if &nu | set nornu | endif
+:augroup END
+nnoremap : :set nornu<CR>:
+
+" Fast buffer swap
+nnoremap <silent><Leader>j :bn<CR>
+nnoremap <silent><Leader>k :bp<CR>
+
 "function UpdateNumeration()
 "	let &l:rnu = mode(1) =~# '^\(no\|v\|V\|\x16\|\)'
 "	redraw!
 "endfunction
 ":au ModeChanged *:* call UpdateNumeration()
-
-" Relative number on active window of normal mode
-:augroup numbertoggle
-:"	autocmd!
-:	autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set rnu | endif
-:	autocmd BufLeave,FocusLost,InsertEnter,WinLeave * if &nu | set nornu | endif
-:augroup END
 
 "Настройка поиска и подсветки поиска
 set ignorecase	"Игнорируем регистр при поиске
@@ -109,6 +114,7 @@ Plug 'kristijanhusak/vim-dadbod-completion'
 
 "Colorschemes
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+Plug 'projekt0n/github-nvim-theme'
 "Plug 'whatyouhide/vim-gotham'
 "Plug 'Mofiqul/vscode.nvim'
 "Plug 'marcopaganini/termschool-vim-theme'
@@ -161,7 +167,7 @@ function SwitchAndCloseCurrentBuffer()
 endfunction
 :command Bd call SwitchAndCloseCurrentBuffer()
 
-nnoremap <C-S-g> :Gdiffsplit<CR>
+nnoremap <Leader><C-S-g> :Gdiffsplit<CR>
 
 "Открыть терминал
 "TODO: terminal close handler, 
@@ -190,12 +196,13 @@ function MyTermOpen()
 "		i
 "	endif
 endfunction
-nnoremap <C-S-t> :call MyTermOpen()<CR>
+nnoremap <Leader><C-t> :call MyTermOpen()<CR>
 
 "Telescope find
 nnoremap <Leader><C-P> :Telescope find_files<CR>
-nnoremap <C-S-F> :Telescope live_grep<CR>
+nnoremap <Leader><C-F> :Telescope live_grep<CR>
 nnoremap <C-S-P> :Telescope 
+nnoremap <Leader><C-B> :Telescope buffers<CR>
 
 " Git
 function ChangeGit()
@@ -211,7 +218,12 @@ nnoremap <Leader><C-G>
 "Добавить Git терминал на отдельную комнду
 let $PATH .= ';C:\Program Files\Git\bin'
 
-lua vim.cmd.colorscheme "catppuccin"
+"lua vim.cmd.colorscheme "catppuccin-mocha"
+
+"light scheme
+lua vim.cmd.colorscheme "github_light_high_contrast"
+"lua vim.cmd.colorscheme "catppuccin-latte"
+
 "lua vim.cmd.colorscheme "vscode"
 "lua vim.cmd.colorscheme "gotham"
 "lua vim.cmd.colorscheme "termschool"
@@ -231,6 +243,7 @@ lua require("telescope-config")
    local cmp = require'cmp'
 
    cmp.setup({
+   -- Add Dadbod complete
    	 vim.api.nvim_create_autocmd({"FileType"}, {
 		 pattern = {"sql","mysql","plsql"},
 		 callback = function()
