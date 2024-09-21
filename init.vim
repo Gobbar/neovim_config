@@ -115,8 +115,9 @@ Plug 'kristijanhusak/vim-dadbod-completion'
 "Colorschemes
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug 'projekt0n/github-nvim-theme'
+Plug 'Mofiqul/vscode.nvim'
+Plug 'nyoom-engineering/oxocarbon.nvim'
 "Plug 'whatyouhide/vim-gotham'
-"Plug 'Mofiqul/vscode.nvim'
 "Plug 'marcopaganini/termschool-vim-theme'
 "Plug 'ghifarit53/tokyonight-vim'
 call plug#end()
@@ -218,11 +219,13 @@ nnoremap <Leader><C-G>
 "Добавить Git терминал на отдельную комнду
 let $PATH .= ';C:\Program Files\Git\bin'
 
-"lua vim.cmd.colorscheme "catppuccin-mocha"
+lua vim.cmd.colorscheme "catppuccin-mocha"
 
 "light scheme
-lua vim.cmd.colorscheme "github_light_high_contrast"
+"lua vim.cmd.colorscheme "vscode"; vim.o.background = "light";
+"lua vim.cmd.colorscheme "github_light_high_contrast"
 "lua vim.cmd.colorscheme "catppuccin-latte"
+"lua vim.cmd.colorscheme "oxocarbon"; vim.o.background = "light";
 
 "lua vim.cmd.colorscheme "vscode"
 "lua vim.cmd.colorscheme "gotham"
