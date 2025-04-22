@@ -1,3 +1,9 @@
+" TODO: set nowrap
+" TODO: keybinding for long lsp error messages
+lua local bufopts = { noremap = true, silent = true, buffer = bufnr }
+lua vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, bufopts)
+" TODO: divide keybindings, plugins installation and my plugins experiments
+
 "Neovim specific stuff
 language en_US.UTF-8
 
@@ -12,7 +18,10 @@ if has('win64')
 	let &shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
 	let &shellpipe  = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
 	set shellquote= shellxquote=
+
+"	lua require("win_roslyn")
 "elseif has('unix')
+"	lua require("unix_roslyn")
 endif
 
 "Быстрый доступ к конфигурации
@@ -25,9 +34,40 @@ let g:config_dir = fnamemodify($MYVIMRC, ':p:h')
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
 inoremap <C-х> <C-[>
 
+set nowrap
+
 "Настройка нумерации и относительной нумерации строк
 set number
 nnoremap <Leader>m :set invrnu<CR>
+nnoremap <C-Bar> :r!
+
+"Create line without move
+nnoremap <silent> <M-o> :call append('.', '')<CR>
+nnoremap <silent> <M-O> :call append(line('.')-1, '')<CR>
+inoremap <silent> <M-o> <C-\><C-O>:call append('.', '')<CR>
+inoremap <silent> <M-O> <C-\><C-O>:call append(line('.')-1, '')<CR>
+
+"Next/previous buffer
+nnoremap <silent> <leader>b :bn<CR>
+nnoremap <silent> <leader>B :bp<CR>
+nnoremap <silent> <leader>j :bn<CR>
+nnoremap <silent> <leader>k :bp<CR>
+nnoremap <silent> <leader>h :tabprevious<CR>
+nnoremap <silent> <leader>l :tabnext<CR>
+nnoremap ZZ <NOP>
+
+"Good idea
+"Place mark on start search point
+"nnoremap / ms/
+"nnoremap ? ms?
+"noremap <leader>k :silent! %bwipe!<cr>
+
+"Переключение между буферами
+"nnoremap <M<lt> :bp<CR>
+""nnoremap <M><bt> :bp<CR>
+"nnoremap <Leader>> :bn<CR>
+"nnoremap <Leader>< :bp<CR>
+"set scrolloff=2 "save 2 line above/below cursor
 
 " Relative number on active window of normal mode
 :augroup numbertoggle
@@ -48,6 +88,7 @@ nnoremap <silent><Leader>k :bp<CR>
 ":au ModeChanged *:* call UpdateNumeration()
 
 "Настройка поиска и подсветки поиска
+let g:searchindex_line_limit=2000000
 set ignorecase	"Игнорируем регистр при поиске
 set smartcase	"Игнорируем регистр при поиске, если все буквы шаблона в одном регистре
 set hlsearch	"Подсветка результатов поиска
@@ -91,6 +132,11 @@ Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'neovim/nvim-lspconfig'
 
+Plug 'seblyng/roslyn.nvim'
+" Plug 'mason-org/mason-registry'
+" Plug 'crashdummy/mason-registry'
+" Plug 'tris203/rzls.nvim'
+
 " Autocompletion
 ""Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
 ""Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
@@ -107,10 +153,18 @@ Plug 'hrsh7th/cmp-cmdline'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 
+"Neogit
+Plug 'sindrets/diffview.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'NeogitOrg/neogit'
+
 "Database
 Plug 'tpope/vim-dadbod'
 Plug 'kristijanhusak/vim-dadbod-ui'
 Plug 'kristijanhusak/vim-dadbod-completion'
+
+" Oil
+Plug 'stevearc/oil.nvim'
 
 "Colorschemes
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
@@ -120,6 +174,11 @@ Plug 'nyoom-engineering/oxocarbon.nvim'
 "Plug 'whatyouhide/vim-gotham'
 "Plug 'marcopaganini/termschool-vim-theme'
 "Plug 'ghifarit53/tokyonight-vim'
+"Plug 'cdmill/neomodern.nvim'
+Plug 'ellisonleao/gruvbox.nvim'
+"Plug 'sainnhe/gruvbox-material.nvim'
+Plug 'EdenEast/nightfox.nvim'
+Plug 'srt0/everblush.nvim'
 call plug#end()
 
 nnoremap ;<C-e> :NERDTreeToggle<CR>
@@ -199,9 +258,15 @@ function MyTermOpen()
 endfunction
 nnoremap <Leader><C-t> :call MyTermOpen()<CR>
 
+" Dadbod-ui
+nnoremap <Leader>d :DBUIToggle<CR>
+nnoremap <Leader>q :DBUIFindBuffer<CR>
+let g:db_ui_execute_on_save = 0
+
 "Telescope find
 nnoremap <Leader><C-P> :Telescope find_files<CR>
 nnoremap <Leader><C-F> :Telescope live_grep<CR>
+nnoremap <Leader><C-B> :Telescope buffers<CR>
 nnoremap <C-S-P> :Telescope 
 nnoremap <Leader><C-B> :Telescope buffers<CR>
 
@@ -219,7 +284,8 @@ nnoremap <Leader><C-G>
 "Добавить Git терминал на отдельную комнду
 let $PATH .= ';C:\Program Files\Git\bin'
 
-lua vim.cmd.colorscheme "catppuccin-mocha"
+"lua vim.cmd.colorscheme "catppuccin-mocha"
+lua vim.cmd.colorscheme "carbonfox"
 
 "light scheme
 "lua vim.cmd.colorscheme "vscode"; vim.o.background = "light";
@@ -240,6 +306,15 @@ lua vim.cmd.colorscheme "catppuccin-mocha"
 lua require("mason-config")
 lua require("my-lsp")
 lua require("telescope-config")
+
+lua require("roslyn").setup {}
+
+" Oil setup
+lua require("oil-config")
+nnoremap - :Oil<CR>
+
+" Neogit setup
+lua require("neogit").setup {}
 
  lua <<EOF
    -- Set up nvim-cmp.
@@ -330,4 +405,7 @@ lua require("telescope-config")
    --  capabilities = capabilities
    --}
  
+-- Lazy.nvim setup
+ --require("config.lazy")
+
 EOF

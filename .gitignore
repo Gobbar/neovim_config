@@ -1,4 +1,5 @@
 autoload/*
+# Plugin manager
 !autoload/plug.vim
 .netrwhist
 codeium_api
