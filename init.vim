@@ -65,3 +65,5 @@ let g:codeium_manual = v:true
 
 execute 'source ' .. g:config_dir .. '/map.vim'
 lua require("init")
+
+execute 'source ' .. g:config_dir .. '/terminal.vim'

@@ -54,10 +54,8 @@ nnoremap <leader><C-e> :NERDTreeToggle<CR>
 nnoremap <Leader><C-S-g> :Gdiffsplit<CR>
 
 " Dadbod-ui
-nnoremap <Leader><M-D> :DBUIToggle<CR>
-nnoremap <Leader><M-Q> :DBUIFindBuffer<CR>
-nnoremap <Leader><M-D> :DBUIToggle<CR>
-nnoremap <Leader><M-Q> :DBUIFindBuffer<CR>
+nnoremap <Leader><C-D> :DBUIToggle<CR>
+nnoremap <Leader><C-Q> :DBUIFindBuffer<CR>
 
 " Telescope
 nnoremap <Leader><C-P> :Telescope find_files<CR>
