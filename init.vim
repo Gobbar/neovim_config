@@ -3,7 +3,6 @@ language en_US.UTF-8
 
 " Main config and OS-specific stuff
 if has('win64')
-	set nohidden	" Swap file error fix (I dunno what it means, lol)
 	" Setup powershell
 	let &shell = executable('pwsh') ? 'pwsh' : 'powershell'
 	let &shellcmdflag = '-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues[''Out-File:Encoding'']=''utf8'';'
@@ -51,6 +50,14 @@ let g:config_dir = fnamemodify($MYVIMRC, ':p:h')
 :command UpdateConfig execute 'so' g:config_dir .. '/init.vim'
 " Copy path to configuration to system register
 :command CopyConfigDir let @* = config_dir
+
+" Current buffer and it's file
+function DiffCurrent()
+	let l:file_name = expand('%')
+	execute 'file % - current buffer'
+	execute 'vert diffsplit ' l:file_name
+endfunction
+:command DiffCurrent call DiffCurrent()
 
 "Codeium
 

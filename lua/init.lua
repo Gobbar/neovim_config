@@ -1,5 +1,7 @@
 --lua vim.cmd.colorscheme "catppuccin-mocha"
-vim.cmd.colorscheme "carbonfox"
+--vim.cmd.colorscheme "carbonfox"
+vim.cmd.colorscheme "sitruuna"
+vim.opt.undofile = true
 
 --light scheme
 --lua vim.cmd.colorscheme "vscode"; vim.o.background = "light";

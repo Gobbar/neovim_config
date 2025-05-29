@@ -15,8 +15,8 @@ inoremap <C-х> <C-[>
 " Only :w only hardcore!
 nnoremap ZZ <NOP>
 " Fast black hole delete
-nnoremap <leader>d "_d
-nnoremap <leader>D "_D
+nnoremap gd "_d
+nnoremap gD "_D
 cnoremap s/ s/\v
 
 " Create line in normal mode without move
@@ -55,14 +55,21 @@ nnoremap <Leader><C-S-g> :Gdiffsplit<CR>
 
 " Dadbod-ui
 nnoremap <Leader><C-D> :DBUIToggle<CR>
-nnoremap <Leader><C-Q> :DBUIFindBuffer<CR>
+nnoremap <Leader>q :DBUIFindBuffer<CR>
 
 " Telescope
 nnoremap <Leader><C-P> :Telescope find_files<CR>
 nnoremap <Leader><C-F> :Telescope live_grep<CR>
 nnoremap <Leader><C-B> :Telescope buffers<CR>
-nnoremap <C-S-P> :Telescope 
-nnoremap <Leader><C-B> :Telescope buffers<CR>
+nnoremap <Leader><C-S> :Telescope treesitter<CR>
+nnoremap <Leader><C-Q> :Telescope quickfix<CR>
+" Telescope experiment
+nnoremap <Leader>tp :Telescope find_files<CR>
+nnoremap <Leader>tF :Telescope live_grep<CR>
+nnoremap <Leader>tf :Telescope current_buffer_fuzzy_find<CR>
+nnoremap <Leader>tb :Telescope buffers<CR>
+nnoremap <Leader>ts :Telescope treesitter<CR>
+nnoremap <Leader>tq :Telescope quickfix<CR>
 
 " Diffview
 nnoremap <Leader><C-G> :DiffviewOpen<CR>
